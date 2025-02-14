@@ -14,6 +14,7 @@ import { auth } from '@clerk/nextjs/server'
 export default async function Header(){
     // we have extracted userID from auth
     const {userId} = await auth();
+    console.log(await auth())
     console.log(userId)
     return (
         <>
@@ -22,11 +23,10 @@ export default async function Header(){
             <SignedOut>
                 <SignInButton />
                 <SignUpButton/>
-                
             </SignedOut>
             <SignedIn>
+                <Link href="/createProfile">Create Profile</Link>
                 <p>Welcome: {userId}</p>
-                {console.log(userId)}
                 <UserButton />
             </SignedIn>
             </div>
