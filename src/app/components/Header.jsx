@@ -26,6 +26,7 @@ export default async function Header(){
             </SignedOut>
             <SignedIn>
                 <Link href="/createProfile">Create Profile</Link>
+                <Link href='/user/${username}'>My Profile</Link>
                 <p>Welcome: {userId}</p>
                 <UserButton />
             </SignedIn>

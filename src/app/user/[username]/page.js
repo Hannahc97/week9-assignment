@@ -10,14 +10,19 @@ export default async function UserPage(){
     const { userId } = await auth() 
 
     const user = await currentUser();
-    console.log(user)
+    const username = user.username
+    
+
     const email = user.emailAddresses
     console.log(email)
+
     // console.log everything out of user 
     return (
         <>
             <h1>User Page</h1>
-            <h2>Welcome user : {userId}</h2>
+            <h2>Welcome : {username}</h2>
+            <p>Welcome: {user?.username ?? "User"}</p>
+            {console.log(username)}
             {email.map((item) => (
                 <div key={item.id}>
                     <h2>Email: {item.emailAddress}</h2>
@@ -26,7 +31,8 @@ export default async function UserPage(){
             {/* optional chaining covers the situation that our user might not provide all the data we are expecting to be given  */}
             {/* it's adding the question mark in front of user */}
             {/* if a value is NULL or undefined and optional chaining isn't used then your app will crash  */}
-            {/* <p>Welcome {user?.firstname}</p> */}
+            
+            
         </>
     )
 }

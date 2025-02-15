@@ -9,24 +9,58 @@
 // Maybe you get shown your completed profile page and there is a link that takes you to the "view all posts" page?
 // Maybe you get redirected automaically to that app. 
 
-export default function CreateProfilePage(){
+import { db } from "@/utils/dbConnection"
+import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
+import { auth } from "@clerk/nextjs/server"
+import { currentUser } from '@clerk/nextjs/server'
 
-    async function handleSubmit(){
+export default async function CreateProfilePage(){
+
+    const user = await currentUser();
+    const username = user.username
+
+    // This is to show the username already prefilled in the form if they signed in with github etc.
+    await db.query(`SELECT FROM users WHERE username = $1`, [username])
+
+    const {userId} = await auth(); // getting their user id 
+
+    const email =  user.emailAddresses[0].emailAddress //getting their email 
+
+    async function handleSubmit(formValues){
+        "use server"
+        const formData = {
+            username: formValues.get("username"),
+            firstName: formValues.get("first_name"),
+            lastName: formValues.get("last_name"),
+            age: formValues.get("age"),
+            location: formValues.get("location")
+        }
+
+        // Then rest of the data they submitted is inserted 
+        db.query(`
+            INSERT INTO users(
+            clerk_id, username, first_name, last_name, email, age, location) 
+            VALUES($1, $2, $3, $4, $5, $6, $7)`, 
+            [userId, formData.username, formData.firstName, formData.lastName, email, formData.age, formData.location])
         
+        revalidatePath('/user/${username}')
+        redirect('/user/${username}')
     }
 
     return (
         <>
             <h1>Create your profile</h1>
-            <form>
-                <label htmlFor="username">Username: </label>
+            <br/>
+            <form action={handleSubmit}>
+            <label htmlFor="username">Username: </label>
                 <br/>
                 <input
                     type="text"
                     name="username"
-                    id="username"
                     required
-                    placeholder="Create a username"/>
+                    placeholder="Create a username"
+                    defaultValue={username}/>
                 <br/>
 
                 <label htmlFor="first_name">First Name: </label>
@@ -34,7 +68,6 @@ export default function CreateProfilePage(){
                 <input
                     type="text"
                     name="first_name"
-                    id="first_name"
                     required
                     placeholder="Enter your first name"/>
                 <br/>
@@ -44,7 +77,6 @@ export default function CreateProfilePage(){
                 <input
                     type="text"
                     name="last_name"
-                    id="last_name"
                     required
                     placeholder="Enter your last name"/>
                 <br/>
@@ -54,7 +86,6 @@ export default function CreateProfilePage(){
                 <input
                     type="number"
                     name="age"
-                    id="age"
                     min={12}
                     max={100}
                     required
@@ -66,7 +97,6 @@ export default function CreateProfilePage(){
                 <input
                     type="text"
                     name="location"
-                    id="location"
                     required
                     placeholder="Enter your location"/>
                 <br/>

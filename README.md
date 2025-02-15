@@ -1,0 +1,3 @@
+- For create user form, I added made sure that the form displays the username pre-filled if they had signed it via github, as github already provides a username. 
+- If they signed in through google they don't have a username already created so they can create that in the form. 
+- made the username column in users table unique in sql 
