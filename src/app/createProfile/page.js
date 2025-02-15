@@ -23,6 +23,10 @@ export default async function CreateProfilePage(){
     // This is to show the username already prefilled in the form if they signed in with github etc.
     await db.query(`SELECT FROM users WHERE username = $1`, [username])
 
+    const {userId} = await auth(); // getting their user id 
+
+    const email =  user.emailAddresses[0].emailAddress //getting their email 
+
     async function handleSubmit(formValues){
         "use server"
         const formData = {
@@ -33,31 +37,12 @@ export default async function CreateProfilePage(){
             location: formValues.get("location")
         }
 
-        const {userId} = await auth(); // getting their user id 
-
-        const user = await currentUser();
-        const username = user.username //getting their username
-        console.log(username)
-
-        const email =  user.emailAddresses[0].emailAddress //getting their email 
-        console.log(email)
-
-        const inputUsername = await db.query(`SELECT FROM users WHERE username = $1`, [username])
-        // when they submit it get's their username from db
-
-
-
         // Then rest of the data they submitted is inserted 
         db.query(`
-            INSERT INTO users(clerk_id, username, first_name, last_name, email, age, location) VALUES($1, $2, $3, $4, $5, $6, $7)`, 
+            INSERT INTO users(
+            clerk_id, username, first_name, last_name, email, age, location) 
+            VALUES($1, $2, $3, $4, $5, $6, $7)`, 
             [userId, formData.username, formData.firstName, formData.lastName, email, formData.age, formData.location])
-
-            if (inputUsername.length > 0){
-                console.log("username exists")
-            } // if that username already exists (so based on length) it will log it exists 
-            else {
-                console.log("username doesn't exist")
-            }
         
         revalidatePath('/user/${username}')
         redirect('/user/${username}')
@@ -73,7 +58,6 @@ export default async function CreateProfilePage(){
                 <input
                     type="text"
                     name="username"
-                    id="username"
                     required
                     placeholder="Create a username"
                     defaultValue={username}/>
@@ -84,7 +68,6 @@ export default async function CreateProfilePage(){
                 <input
                     type="text"
                     name="first_name"
-                    id="first_name"
                     required
                     placeholder="Enter your first name"/>
                 <br/>
@@ -94,7 +77,6 @@ export default async function CreateProfilePage(){
                 <input
                     type="text"
                     name="last_name"
-                    id="last_name"
                     required
                     placeholder="Enter your last name"/>
                 <br/>
@@ -104,7 +86,6 @@ export default async function CreateProfilePage(){
                 <input
                     type="number"
                     name="age"
-                    id="age"
                     min={12}
                     max={100}
                     required
@@ -116,7 +97,6 @@ export default async function CreateProfilePage(){
                 <input
                     type="text"
                     name="location"
-                    id="location"
                     required
                     placeholder="Enter your location"/>
                 <br/>
