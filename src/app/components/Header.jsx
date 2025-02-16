@@ -22,20 +22,36 @@ export default async function Header(){
     const username = user?.username
     return (
         <>
-            <div className="flex justify-evenly items-center bg-slate-50 text-black p-1">
-            <Link href="/">Home</Link>
-            <SignedOut>
-                <SignInButton />
-                <SignUpButton/>
-            </SignedOut>
-            <SignedIn>
-                <Link href="/createProfile">Create Profile</Link>
-                <Link href={`/user/${username}`}>My Profile</Link>
-                <p>Welcome: {username}</p>
-                <UserButton showName/>
-            </SignedIn>
+            <div className = "w-full h-20 shadow-xl bg-white" >
+                <div className="flex justify-between items-center h-full w-full px-4">
+                    <div className="title-container">
+                        <Link className="text-xl hover:border-b-4" href="/">Postopia</Link>
+                    </div>
+                    <div>
+                        <ul className="flex flex-wrap">
+                        <SignedOut>
+                            <SignInButton />
+                            <SignUpButton/>
+                        </SignedOut>
+                        <SignedIn>
+                            <Link href="/createProfile">
+                            <li className="ml-10 text-lg hover:border-b-4">Create Profile</li>
+                            </Link>
+                            
+                            <Link href="/createPosts"
+                            className="ml-10 text-lg hover:border-b-4"><li>Create A Post</li>
+                            </Link>
+
+                            <Link href={`/user/${username}`} 
+                            className="ml-10 text-lg hover:border-b-4"><li>My Profile</li>
+                            </Link>
+                            <li className="ml-10 text-lg"><p>Welcome: {username}</p></li>
+                            <li className="ml-10 text-lg hover:border-b-4"><UserButton showName/></li>
+                        </SignedIn>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        
         </>
     )
 }
