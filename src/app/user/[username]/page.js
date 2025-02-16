@@ -26,10 +26,25 @@ export default async function UserPage({params}){
     const wrangleduser = myUser.rows
     console.log(wrangleduser)
 
+    const myComments = await db.query (`
+        SELECT posts.post_title, posts.content FROM users
+        JOIN posts ON posts.clerk_id = users.clerk_id WHERE users.clerk_id = 
+        $1`, [userId])
+    console.log(myComments)
+
+    const wrangledMyComments = myComments.rows
+
+
     // console.log everything out of user 
     return (
         <>
-            <h1>My Profile</h1>
+        <div className="grid grid-cols-2 grid-rows-1 gap-4">
+            <div className='flex flex-col border-purple-500 border-solid border-2 m-4 p-2 bg-purple-400 rounded-lg'>
+                <div className='text-2xl'>            
+                    <h1>My Profile</h1>
+                </div>
+            
+            <div className=''>
             {wrangleduser.map((item)=> (
                 <div key={item.clerk_id}>
                     <h1>First name: {item.first_name}</h1>
@@ -40,19 +55,33 @@ export default async function UserPage({params}){
                     <h1>Location: {item.location}</h1>
                 </div>
             ))}
+            </div>
 
-            {/* <p>Welcome: {user?.username ?? "User"}</p>
-            {console.log(username)}
-            {email.map((item) => (
-                <div key={item.id}>
-                    <h2>Email: {item.emailAddress}</h2>
-                </div>
-            ))} */}
+            <h1>This is using clerk dot notation</h1>
+            <h1>{user.username}</h1>
+            <h1>{user.firstName}</h1>
+            <h1>{user.emailAddresses[0].emailAddress}</h1>
             {/* optional chaining covers the situation that our user might not provide all the data we are expecting to be given  */}
             {/* it's adding the question mark in front of user */}
             {/* if a value is NULL or undefined and optional chaining isn't used then your app will crash  */}
-            
-            
+            </div>
+
+            <div>
+                <div className='text-2xl m-4'> 
+                    <h1>My posts</h1>
+                </div>
+            <div className="grid mt-6 grid-cols-1 gap-3 m-2">
+                {wrangledMyComments.map((comment)=>(
+                    <div className="flex flex-col justify-between rounded-lg bg-white p-4 shadow-lg" 
+                        key={comment.id}>
+                        <h1 className=" text-2xl">{comment.post_title}</h1>
+                        <p className='text-gray-500'>{comment.content}</p>
+                        <br/>
+                    </div>
+                ))}
+            </div>
+            </div>
+        </div>
         </>
     )
 }
