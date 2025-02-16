@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.5.0",
+    "@radix-ui/react-label": "^2.1.2",
     "next": "15.1.6",
     "pg": "^8.13.3",
     "react": "^19.0.0",

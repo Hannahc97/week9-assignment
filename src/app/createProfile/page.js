@@ -14,6 +14,7 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { currentUser } from '@clerk/nextjs/server'
+import RadixLabel from "../components/RadixComponent"
 
 export default async function CreateProfilePage(){
 
@@ -59,6 +60,7 @@ export default async function CreateProfilePage(){
                 </div>
                 <div className="w-full max-w-xs">
                     <form action={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                        {/* <RadixLabel htmlFor="username">Username:</RadixLabel> */}
                     <label htmlFor="username">Username: </label>
                         <br/>
                         <input
