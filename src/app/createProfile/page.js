@@ -18,14 +18,17 @@ import { currentUser } from '@clerk/nextjs/server'
 export default async function CreateProfilePage(){
 
     const user = await currentUser();
+    // Gets their username from clerk
     const username = user.username
 
     // This is to show the username already prefilled in the form if they signed in with github etc.
     await db.query(`SELECT FROM users WHERE username = $1`, [username])
 
-    const {userId} = await auth(); // getting their user id 
+    // getting their user id 
+    const {userId} = await auth(); 
 
-    const email =  user.emailAddresses[0].emailAddress //getting their email 
+    //getting their email from clerk
+    const email =  user.emailAddresses[0].emailAddress 
 
     async function handleSubmit(formValues){
         "use server"
@@ -37,15 +40,15 @@ export default async function CreateProfilePage(){
             location: formValues.get("location")
         }
 
-        // Then rest of the data they submitted is inserted 
+        // Then rest of the data they submitted is inserted to the db
         db.query(`
             INSERT INTO users(
             clerk_id, username, first_name, last_name, email, age, location) 
             VALUES($1, $2, $3, $4, $5, $6, $7)`, 
             [userId, formData.username, formData.firstName, formData.lastName, email, formData.age, formData.location])
         
-        revalidatePath('/user/${username}')
-        redirect('/user/${username}')
+        revalidatePath(`/user/${username}`)
+        redirect(`/user/${username}`)
     }
 
     return (
