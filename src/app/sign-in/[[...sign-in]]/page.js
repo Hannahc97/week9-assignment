@@ -6,7 +6,10 @@ export default async function SignInPage (){
 
     return (
         <>
-            <SignIn forceRedirectUrl={`/user/username`}/>
+            <div className="flex justify-center m-4">
+            <SignIn 
+            forceRedirectUrl={`/user/username`}/>
+            </div>
         </>
     )
 }
