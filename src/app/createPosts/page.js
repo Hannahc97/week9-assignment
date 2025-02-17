@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
+import DeleteButton from "../components/DeleteButton";
 
 
 export default async function CreatePostsPage (){
@@ -65,22 +66,20 @@ export default async function CreatePostsPage (){
             </div>
             </div>
 
-
             <div className="text-center text-2xl">
             <h1>My Posts</h1>
             </div>
-
-            
 
             <div className="key-feature-grid mt-10 grid grid-cols-2 gap-7 md:grid-cols-3 xl:grid-cols-4 m-4">
             {wrangledMyComments.map((comment)=>(
                 <div className="flex flex-col justify-between rounded-lg bg-white p-5 shadow-lg" 
                     key={comment.id}>
                     <Link href={`/createPosts/${comment.id}`}>
-                        <h1>{comment.post_title}</h1>
+                        <h1 className="text-2xl">{comment.post_title}</h1>
                     </Link>
-                    <p>{comment.content}</p>
-                    <br/>
+                    <p className='text-gray-500'>{comment.content}</p>
+                    <DeleteButton postId={comment.id}/>
+                    
                 </div>
             ))}
             </div>
